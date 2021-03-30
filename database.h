@@ -11,7 +11,6 @@
 using namespace std;
 class Database {
   public:
-    virtual ~Database() {};
     virtual bool createNewsGroup(string title) = 0;
     virtual bool deleteNewsGroup(int id) = 0;
     virtual NewsGroup getNewsGroup(int id) = 0;

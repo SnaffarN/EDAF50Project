@@ -3,12 +3,13 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <pair>
+#include <exception>
 
 using std::string;
 using std::vector;
 using std::unordered_map;
 using std::pair;
+using std::exception;
 
 NewsGroup::NewsGroup(int i, string t) : id(i), title(t) {}
 
@@ -38,11 +39,10 @@ string NewsGroup::getTitle() {
 
 Article NewsGroup::getArticle(int articleID) {
   try {
-    Article result = articles.at(articleID);
+    return articles.at(articleID);
   } catch (exception& e) {
-    result = NULL;
+    throw "Cant find article";
   }
-  return result;
 }
 
 vector<Article> NewsGroup::getArticles() {
@@ -54,8 +54,8 @@ vector<Article> NewsGroup::getArticles() {
   return result;
 }
 
-bool contains(int articleID) {
-  auto result = articles.find(id);
+bool NewsGroup::contains(int articleID) {
+  auto result = articles.find(articleID);
   if(result != articles.end()) {
     return true;
   } else {

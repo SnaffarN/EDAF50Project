@@ -212,13 +212,13 @@ Server init(int argc, char* argv[])
 int main(int argc, char* argv[])
 {
   auto server = init(argc, argv);
-  MemoryDatabase database();
+  Database *database = new MemoryDatabase();
   while(true) {
     auto conn = server.waitForActivity();
     if(conn != nullptr) {
       try {
         MessageHandler messageHandler(conn);
-        readMessage(messageHandler, database);
+        readMessage(messageHandler, (*database));
       } catch (ConnectionClosedException&) {
         server.deregisterConnection(conn);
         cout << "Client closed connection" << endl;

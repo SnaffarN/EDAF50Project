@@ -88,7 +88,7 @@ void MessageHandler::sendByte(int code) {
   try {
     conn->write(code);
   } catch(exception& e)  {
-    throw ConnectionClosedException::ConnectionClosedException();
+    throw "Connection closed exception";
   }
 }
 
