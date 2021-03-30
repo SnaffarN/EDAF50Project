@@ -59,7 +59,8 @@ int MessageHandler::recvInt() {
 int MessageHandler::recvIntParameter() {
   Protocol code = recvCode();
   if(code != Protocol::PAR_NUM) {
-    throw "Expected code PAR_NUM got code: " + static_cast<int>(code); //add ProtocolViolationException later.
+    throw ProtocolViolationException{}; 
+    //static_cast<int>(code); 
   }
   return recvInt();
 }
@@ -67,11 +68,13 @@ int MessageHandler::recvIntParameter() {
 string MessageHandler::recvStringParameter() {
   Protocol code = recvCode();
   if(code != Protocol::PAR_STRING) {
-    throw "Expected code PAR_STRING got code: " + static_cast<int>(code); //add ProtocolViolationException later.
+    throw ProtocolViolationException{}; 
+    //throw "Expected code PAR_STRING got code: " + static_cast<int>(code); //add ProtocolViolationException later.
   }
   int n = recvInt();
   if (n < 0) {
-    throw "String length must be greater or equal to 0";
+    throw ProtocolViolationException{}; 
+    //throw "String length must be greater or equal to 0";
   }
   string result;
   for(int i = 0; i < n; i++) {
@@ -85,7 +88,7 @@ void MessageHandler::sendByte(int code) {
   try {
     conn->write(code);
   } catch(exception& e)  {
-    throw "Connection Exception";//ConnectionClosedException::ConnectionClosedException();
+    throw ConnectionClosedException::ConnectionClosedException();
   }
 }
 
