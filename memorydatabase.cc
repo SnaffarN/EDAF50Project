@@ -9,7 +9,7 @@ using namespace std;
 
 bool MemoryDatabase::createNewsGroup(string title) {
   int id = hashTitle(title);
-  if(!contains(id)) {
+  if(!containsNewsGroup(id)) {
     newsGroups.insert(pair<int, NewsGroup>{id, NewsGroup(id, title)});
     return true;
   }
@@ -17,7 +17,7 @@ bool MemoryDatabase::createNewsGroup(string title) {
 }
 
 bool MemoryDatabase::deleteNewsGroup(int id) {
-  if(contains(id)) {
+  if(containsNewsGroup(id)) {
     newsGroups.erase(id);
     return true;
   }
@@ -26,11 +26,10 @@ bool MemoryDatabase::deleteNewsGroup(int id) {
 
 NewsGroup MemoryDatabase::getNewsGroup(int id) {
   try {
-    NewsGroup result = newsGroups.at(id);
+    return newsGroups.at(id);
   } catch (exception& e) {
-    result = NULL;
+    throw "NewsGroup doesnt exist";
   }
-  return result;
 }
 
 NewsGroup MemoryDatabase::getNewsGroup(string title) {
@@ -82,11 +81,11 @@ bool MemoryDatabase::containsArticle(int newsGroupID, int articleID) {
   return newsGroup.contains(articleID);
 }
 
-int hashTitle(string title) {
+int MemoryDatabase::hashTitle(string title) {
   hash<string> hasher;
   return static_cast<int>(hasher(title));
 }
 
-int getCount() {
+int MemoryDatabase::getCount() {
   return count++;
 }

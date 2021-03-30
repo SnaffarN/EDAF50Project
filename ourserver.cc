@@ -15,7 +15,7 @@
 
 using namespace std;
 
-void listNewsGroup(MessageHandler messageHandler, Database* database) {
+void listNewsGroup(MessageHandler messageHandler, Database& database) {
   try {
     if(messageHandler.recvCode() == Protocol::COM_END) {
       vector<NewsGroup> newsGroups = database.getNewsGroups();
@@ -32,7 +32,7 @@ void listNewsGroup(MessageHandler messageHandler, Database* database) {
   }
 }
 
-void createNewsGroup(MessageHandler messageHandler, Database* database) {
+void createNewsGroup(MessageHandler messageHandler, Database& database) {
   try {
     string title = messageHandler.recvStringParameter();
     if(messageHandler.recvCode() == Protocol::COM_END) {
@@ -50,7 +50,7 @@ void createNewsGroup(MessageHandler messageHandler, Database* database) {
   }
 }
 
-void deleteNewsGroup(MessageHandler messageHandler, Database* database) {
+void deleteNewsGroup(MessageHandler messageHandler, Database& database) {
   try {
     int id = messageHandler.recvIntParameter();
     if(messageHandler.recvCode() == Protocol::COM_END) {
@@ -68,7 +68,7 @@ void deleteNewsGroup(MessageHandler messageHandler, Database* database) {
   }
 }
 
-void listArticles(MessageHandler messageHandler, Database* database) {
+void listArticles(MessageHandler messageHandler, Database& database) {
   try {
     int id = messageHandler.recvIntParameter();
     if(messageHandler.recvCode() == Protocol::COM_END) {
@@ -92,7 +92,7 @@ void listArticles(MessageHandler messageHandler, Database* database) {
   }
 }
 
-void createArticle(MessageHandler messageHandler, Database* database) {
+void createArticle(MessageHandler messageHandler, Database& database) {
   try {
     int id = messageHandler.recvIntParameter();
     string title = messageHandler.recvStringParameter();
@@ -113,7 +113,7 @@ void createArticle(MessageHandler messageHandler, Database* database) {
   }
 }
 
-void deleteArticle(MessageHandler messageHandler, Database* database) {
+void deleteArticle(MessageHandler messageHandler, Database& database) {
   try {
     int newsGroupID = messageHandler.recvIntParameter();
     int articleID = messageHandler.recvIntParameter();
@@ -137,7 +137,7 @@ void deleteArticle(MessageHandler messageHandler, Database* database) {
   }
 }
 
-void getArticle(MessageHandler messageHandler, Database* database) {
+void getArticle(MessageHandler messageHandler, Database& database) {
   try {
     int newsGroupID = messageHandler.recvIntParameter();
     int articleID = messageHandler.recvIntParameter();
@@ -165,7 +165,7 @@ void getArticle(MessageHandler messageHandler, Database* database) {
   }
 }
 
-void readMessage(MessageHandler messageHandler, Database* database) {
+void readMessage(MessageHandler messageHandler, Database& database) {
   Protocol code = messageHandler.recvCode();
   switch(code) {
     case Protocol::COM_LIST_NG:     listNewsGroup(messageHandler, database);
@@ -218,7 +218,7 @@ int main(int argc, char* argv[])
     if(conn != nullptr) {
       try {
         MessageHandler messageHandler(conn);
-        readMessage(messageHandler, &database);
+        readMessage(messageHandler, database);
       } catch (ConnectionClosedException&) {
         server.deregisterConnection(conn);
         cout << "Client closed connection" << endl;

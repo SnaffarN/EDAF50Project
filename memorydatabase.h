@@ -11,7 +11,6 @@ using std::string;
 
 class MemoryDatabase: public Database {
 public:
-  using Database::containsNewsGroup;
   bool createNewsGroup(string title) override;
   bool deleteNewsGroup(int id) override;
   NewsGroup getNewsGroup(int id) override;
