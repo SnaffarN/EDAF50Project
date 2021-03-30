@@ -59,8 +59,8 @@ int MessageHandler::recvInt() {
 int MessageHandler::recvIntParameter() {
   Protocol code = recvCode();
   if(code != Protocol::PAR_NUM) {
-    throw ProtocolViolationException{}; 
-    //static_cast<int>(code); 
+    throw ProtocolViolationException{};
+    //static_cast<int>(code);
   }
   return recvInt();
 }
@@ -68,12 +68,12 @@ int MessageHandler::recvIntParameter() {
 string MessageHandler::recvStringParameter() {
   Protocol code = recvCode();
   if(code != Protocol::PAR_STRING) {
-    throw ProtocolViolationException{}; 
+    throw ProtocolViolationException{};
     //throw "Expected code PAR_STRING got code: " + static_cast<int>(code); //add ProtocolViolationException later.
   }
   int n = recvInt();
   if (n < 0) {
-    throw ProtocolViolationException{}; 
+    throw ProtocolViolationException{};
     //throw "String length must be greater or equal to 0";
   }
   string result;
