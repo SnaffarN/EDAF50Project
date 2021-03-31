@@ -24,9 +24,6 @@ class Database {
     virtual vector<Article> getArticles(int newsGroupID) = 0;
     virtual bool containsArticle(int newsGroupID, int articleID) = 0;
 
-  private:
-    virtual int hashTitle(string title) = 0;
-    virtual int getCount() = 0;
 };
 
 #endif

@@ -212,7 +212,7 @@ Server init(int argc, char* argv[])
 int main(int argc, char* argv[])
 {
   auto server = init(argc, argv);
-  Database *database = new MemoryDatabase();
+  MemoryDatabase *database = new MemoryDatabase();
   while(true) {
     auto conn = server.waitForActivity();
     if(conn != nullptr) {

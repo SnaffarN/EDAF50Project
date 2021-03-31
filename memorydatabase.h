@@ -25,8 +25,8 @@ public:
   bool containsArticle(int newsGroupID, int articleID) override;
 
 private:
-  int hashTitle(string title) override;
-  int getCount() override;
+  int hashTitle(string title);
+  int getCount();
   int count = 0;
   unordered_map<int, NewsGroup> newsGroups;
 };
