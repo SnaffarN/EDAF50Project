@@ -4,18 +4,31 @@
 #include <vector>
 #include <unordered_map>
 #include <exception>
+#include <iostream>
 
 using std::string;
 using std::vector;
 using std::unordered_map;
 using std::pair;
 using std::exception;
+using std::cout;
+using std::endl;
 
-NewsGroup::NewsGroup(int i, string t) : id(i), title(t) {}
+NewsGroup::NewsGroup(int i, string t) : id(i), title(t), articles() {
+  cout << "Creating NewsGroup: " << t << " with ID: " << i << endl;
+}
 
-bool NewsGroup::createArticle(int articleID, string title, string author, string text) {
+NewsGroup::NewsGroup(const NewsGroup &n1) {
+  id = n1.id;
+  title = n1.title;
+  articles = n1.articles;
+}
+
+bool NewsGroup::createArticle(const int& articleID, const string& title, const string& author, const string& text) {
   if(!contains(articleID)) {
-    articles.insert(pair<int, Article>{articleID, Article(articleID, title, author, text)});
+    articles.insert(std::make_pair(articleID, Article(articleID, title, author, text)));
+    cout << "Creating article: " << title << ". The number of articles is now: " << articles.size() << endl;
+    cout << "I am newsgroup: " << getTitle() << " with id: " << getID() << endl;
     return true;
   }
   return false;

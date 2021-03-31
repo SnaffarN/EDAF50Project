@@ -13,8 +13,8 @@ class Database {
   public:
     virtual bool createNewsGroup(string title) = 0;
     virtual bool deleteNewsGroup(int id) = 0;
-    virtual NewsGroup getNewsGroup(int id) = 0;
-    virtual NewsGroup getNewsGroup(string title) = 0;
+    virtual NewsGroup& getNewsGroup(int id) = 0;
+    virtual NewsGroup& getNewsGroup(string title) = 0;
     virtual vector<NewsGroup> getNewsGroups() = 0;
     virtual bool containsNewsGroup(int id) = 0;
 

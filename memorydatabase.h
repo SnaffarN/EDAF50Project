@@ -11,10 +11,11 @@ using std::string;
 
 class MemoryDatabase: public Database {
 public:
+  MemoryDatabase();
   bool createNewsGroup(string title) override;
   bool deleteNewsGroup(int id) override;
-  NewsGroup getNewsGroup(int id) override;
-  NewsGroup getNewsGroup(string title) override;
+  NewsGroup& getNewsGroup(int id) override;
+  NewsGroup& getNewsGroup(string title) override;
   vector<NewsGroup> getNewsGroups() override;
   bool containsNewsGroup(int id) override;
 

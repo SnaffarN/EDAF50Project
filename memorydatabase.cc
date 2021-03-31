@@ -7,6 +7,8 @@
 
 using namespace std;
 
+MemoryDatabase::MemoryDatabase() : newsGroups() {}
+
 bool MemoryDatabase::createNewsGroup(string title) {
   int id = hashTitle(title);
   if(!containsNewsGroup(id)) {
@@ -24,7 +26,7 @@ bool MemoryDatabase::deleteNewsGroup(int id) {
   return false;
 }
 
-NewsGroup MemoryDatabase::getNewsGroup(int id) {
+NewsGroup& MemoryDatabase::getNewsGroup(int id) {
   try {
     return newsGroups.at(id);
   } catch (exception& e) {
@@ -32,7 +34,7 @@ NewsGroup MemoryDatabase::getNewsGroup(int id) {
   }
 }
 
-NewsGroup MemoryDatabase::getNewsGroup(string title) {
+NewsGroup& MemoryDatabase::getNewsGroup(string title) {
   int id = hashTitle(title);
   return getNewsGroup(id);
 }
@@ -56,29 +58,24 @@ bool MemoryDatabase::containsNewsGroup(int id) {
 }
 
 bool MemoryDatabase::createArticle(int newsGroupID, string title, string author, string text) {
-  NewsGroup newsGroup = getNewsGroup(newsGroupID);
-  return newsGroup.createArticle(getCount(), title, author, text);
+  return getNewsGroup(newsGroupID).createArticle(getCount(), title, author, text);
 }
 
 bool MemoryDatabase::deleteArticle(int newsGroupID, int articleID) {
-  NewsGroup newsGroup = getNewsGroup(newsGroupID);
-  return newsGroup.deleteArticle(articleID);
+  return getNewsGroup(newsGroupID).deleteArticle(articleID);
 
 }
 
 Article MemoryDatabase::getArticle(int newsGroupID, int articleID) {
-  NewsGroup newsGroup = getNewsGroup(newsGroupID);
-  return newsGroup.getArticle(articleID);
+  return getNewsGroup(newsGroupID).getArticle(articleID);
 }
 
 vector<Article> MemoryDatabase::getArticles(int newsGroupID) {
-  NewsGroup newsGroup = getNewsGroup(newsGroupID);
-  return newsGroup.getArticles();
+  return getNewsGroup(newsGroupID).getArticles();
 }
 
 bool MemoryDatabase::containsArticle(int newsGroupID, int articleID) {
-  NewsGroup newsGroup = getNewsGroup(newsGroupID);
-  return newsGroup.contains(articleID);
+  return getNewsGroup(newsGroupID).contains(articleID);
 }
 
 int MemoryDatabase::hashTitle(string title) {

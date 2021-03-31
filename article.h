@@ -7,11 +7,12 @@ using std::string;
 
 class Article {
   public:
-    Article(int id, string title, string author, string text);
-    int getID();
-    string getTitle();
-    string getAuthor();
-    string getText();
+    Article(const int& id, const string& title, const string& author, const string& text);
+    Article(const Article &a1);
+    int getID() const;
+    string getTitle() const;
+    string getAuthor() const;
+    string getText() const;
   private:
     int id;
     string title;

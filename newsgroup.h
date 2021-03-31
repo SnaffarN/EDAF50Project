@@ -14,7 +14,8 @@ using std::unordered_map;
 class NewsGroup {
   public:
     NewsGroup(int id, string title);
-    bool createArticle(int articleID, string title, string author, string text);
+    NewsGroup(const NewsGroup &n1);
+    bool createArticle(const int& articleID, const string& title, const string& author, const string& text);
     bool deleteArticle(int articleID);
     int getID();
     string getTitle();

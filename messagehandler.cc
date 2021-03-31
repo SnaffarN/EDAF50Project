@@ -87,8 +87,8 @@ string MessageHandler::recvStringParameter() {
 void MessageHandler::sendByte(int code) {
   try {
     conn->write(code);
-  } catch(exception& e)  {
-    throw "Connection closed exception";
+  } catch(ConnectionClosedException& e)  {
+    throw e;
   }
 }
 
