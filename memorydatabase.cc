@@ -1,17 +1,19 @@
 #include "memorydatabase.h"
 
+#include <algorithm>
 #include <string>
 #include <functional>
 #include <vector>
-#include <unordered_map>
+#include <map>
 
 using namespace std;
 
 MemoryDatabase::MemoryDatabase() : newsGroups() {}
 
 bool MemoryDatabase::createNewsGroup(string title) {
-  int id = hashTitle(title);
-  if(!containsNewsGroup(id)) {
+  int id = getNewsGroupCount();
+  if(!containsNewsGroup(title)) {
+    incNewsGroupCount();
     newsGroups.insert(pair<int, NewsGroup>{id, NewsGroup(id, title)});
     return true;
   }
@@ -35,8 +37,12 @@ NewsGroup& MemoryDatabase::getNewsGroup(int id) {
 }
 
 NewsGroup& MemoryDatabase::getNewsGroup(string title) {
-  int id = hashTitle(title);
-  return getNewsGroup(id);
+  for (auto& it : newsGroups) {
+      if (it.second.getTitle() == title) {
+        return it.second;
+      }
+  }
+  throw "NewsGroup doesnt exist";
 }
 
 vector<NewsGroup> MemoryDatabase::getNewsGroups() {
@@ -57,8 +63,19 @@ bool MemoryDatabase::containsNewsGroup(int id) {
   }
 }
 
+bool MemoryDatabase::containsNewsGroup(string title) {
+  for (auto& it : newsGroups) {
+      if (it.second.getTitle() == title) {
+        return true;
+      }
+  }
+  return false;
+}
+
 bool MemoryDatabase::createArticle(int newsGroupID, string title, string author, string text) {
-  return getNewsGroup(newsGroupID).createArticle(getCount(), title, author, text);
+  int articleID = getNewsGroup(newsGroupID).getArticleCount();
+  getNewsGroup(newsGroupID).incArticleCount();
+  return getNewsGroup(newsGroupID).createArticle(articleID, title, author, text);
 }
 
 bool MemoryDatabase::deleteArticle(int newsGroupID, int articleID) {
@@ -83,6 +100,9 @@ int MemoryDatabase::hashTitle(string title) {
   return static_cast<int>(hasher(title));
 }
 
-int MemoryDatabase::getCount() {
-  return count++;
+int MemoryDatabase::getNewsGroupCount() {
+  return newsGroupCount;
+}
+int MemoryDatabase::incNewsGroupCount() {
+  return ++newsGroupCount;
 }

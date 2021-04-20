@@ -4,7 +4,6 @@
 #include "article.h"
 #include "newsgroup.h"
 
-#include <unordered_map>
 #include <vector>
 #include <string>
 
@@ -17,6 +16,7 @@ class Database {
     virtual NewsGroup& getNewsGroup(string title) = 0;
     virtual vector<NewsGroup> getNewsGroups() = 0;
     virtual bool containsNewsGroup(int id) = 0;
+    virtual bool containsNewsGroup(string title) = 0;
 
     virtual bool createArticle(int newsGroupID, string title, string author, string text) = 0;
     virtual bool deleteArticle(int newsGroupID, int articleID) = 0;

@@ -5,11 +5,11 @@
 
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <map>
 
 using std::string;
 using std::vector;
-using std::unordered_map;
+using std::map;
 
 class NewsGroup {
   public:
@@ -22,9 +22,12 @@ class NewsGroup {
     Article getArticle(int articleID);
     vector<Article> getArticles();
     bool contains(int articleID);
+    int getArticleCount();
+    int incArticleCount();
   private:
     int id;
+    int articleCount = 0;
     string title;
-    unordered_map<int, Article> articles;
+    map<int, Article> articles;
 };
 #endif

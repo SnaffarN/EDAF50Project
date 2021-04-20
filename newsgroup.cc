@@ -2,13 +2,13 @@
 
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <map>
 #include <exception>
 #include <iostream>
 
 using std::string;
 using std::vector;
-using std::unordered_map;
+using std::map;
 using std::pair;
 using std::exception;
 using std::cout;
@@ -74,4 +74,12 @@ bool NewsGroup::contains(int articleID) {
   } else {
     return false;
   }
+}
+
+int NewsGroup::getArticleCount() {
+  return articleCount;
+}
+
+int NewsGroup::incArticleCount() {
+  return ++articleCount;
 }

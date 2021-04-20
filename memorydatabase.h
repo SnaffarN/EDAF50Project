@@ -5,7 +5,7 @@
 
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <map>
 
 using std::string;
 
@@ -18,6 +18,7 @@ public:
   NewsGroup& getNewsGroup(string title) override;
   vector<NewsGroup> getNewsGroups() override;
   bool containsNewsGroup(int id) override;
+  bool containsNewsGroup(string title) override;
 
   bool createArticle(int id, string title, string author, string text) override;
   bool deleteArticle(int newsGroupID, int articleID) override;
@@ -27,8 +28,9 @@ public:
 
 private:
   int hashTitle(string title);
-  int getCount();
-  int count = 0;
-  unordered_map<int, NewsGroup> newsGroups;
+  int getNewsGroupCount();
+  int incNewsGroupCount();
+  int newsGroupCount = 0;
+  map<int, NewsGroup> newsGroups;
 };
 #endif
