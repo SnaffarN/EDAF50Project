@@ -6,9 +6,12 @@
 #include <string>
 #include <memory>
 #include <exception>
+#include <iostream>
 
 using std::exception;
 using std::string;
+using std::endl;
+using std::cout;
 
 MessageHandler::MessageHandler(std::shared_ptr<Connection> c) : conn(c) {}
 
@@ -68,13 +71,15 @@ int MessageHandler::recvIntParameter() {
 string MessageHandler::recvStringParameter() {
   Protocol code = recvCode();
   if(code != Protocol::PAR_STRING) {
+    cout << "Expected code PAR_STRING got code: " + static_cast<int>(code) << endl; //add ProtocolViolationException later.
     throw ProtocolViolationException{};
-    //throw "Expected code PAR_STRING got code: " + static_cast<int>(code); //add ProtocolViolationException later.
+
   }
   int n = recvInt();
   if (n < 0) {
+    cout << "String length must be greater or equal to 0" << endl;
+    cout << "Length of string: " << n << endl;
     throw ProtocolViolationException{};
-    //throw "String length must be greater or equal to 0";
   }
   string result;
   for(int i = 0; i < n; i++) {

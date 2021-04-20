@@ -2,7 +2,6 @@
 #include "connectionclosedexception.h"
 #include "server.h"
 #include "messagehandler.h"
-#include "protocol.h"
 #include "database.h"
 #include "memorydatabase.h"
 
@@ -109,6 +108,7 @@ void createArticle(MessageHandler messageHandler, Database& database) {
       messageHandler.sendCode(Protocol::ANS_END);
     } else throw ProtocolViolationException{};
   } catch (exception& e) {
+    cout << "Hej här är jag " << endl;
     throw ProtocolViolationException{};
   }
 }
