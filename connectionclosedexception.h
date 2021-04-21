@@ -14,6 +14,13 @@
 #ifndef CONNECTION_CLOSED_EXCEPTION_H
 #define CONNECTION_CLOSED_EXCEPTION_H
 
-struct ConnectionClosedException {};
+#include <exception>
+using namespace std;
+
+struct ConnectionClosedException : public exception {
+  const char * what () const throw ()  {
+    return "The connection was closed.";
+  }
+};
 
 #endif

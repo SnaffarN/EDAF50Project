@@ -1,5 +1,6 @@
 #include "connection.h"
 #include "connectionclosedexception.h"
+#include "protocolviolationexception.h"
 #include "messagehandler.h"
 #include "protocol.h"
 
@@ -8,6 +9,7 @@
 #include <stdexcept>
 #include <string>
 #include <memory>
+#include <limits>
 
 using namespace std;
 
@@ -37,8 +39,8 @@ string listNewsGroups(MessageHandler messageHandler) {
     }
     messageHandler.recvCode();
     return result;
-  } catch (exception& e) {
-    throw ProtocolViolationException{};
+  } catch (exception&) {
+    throw;
   }
 }
 
@@ -66,11 +68,10 @@ string createNewsGroup(MessageHandler messageHandler) {
         return "Newsgroup: " + name + " was not created and no reason was provided.";
       }
     } else {
-      throw ProtocolViolationException{};
+      throw ProtocolViolationException();
     }
-  } catch (exception& e) {
-    cout << e.what() << endl;
-    throw ProtocolViolationException{};
+  } catch (exception&) {
+    throw;
   }
 }
 
@@ -96,11 +97,10 @@ string deleteNewsGroup(MessageHandler messageHandler) {
         return "Newsgroup with id: " + to_string(id) + ", was not deleted and no reason was provided.";
       }
     } else {
-      throw ProtocolViolationException{};
+      throw ProtocolViolationException();
     }
-  } catch (exception& e) {
-    cout << e.what() << endl;
-    throw ProtocolViolationException{};
+  } catch (exception&) {
+    throw;
   }
 }
 
@@ -125,17 +125,17 @@ string listArticles(MessageHandler messageHandler) {
     } else if (code == Protocol::ANS_NAK) {
       if(messageHandler.recvCode() == Protocol::ERR_NG_DOES_NOT_EXIST) {
         messageHandler.recvCode();
-        return "Newsgroup with id: " + to_string(newsGroupID) + "does not exist.";
+        return "Newsgroup with id: " + to_string(newsGroupID) + " does not exist.";
       } else {
         return "Newsgroup with id: " + to_string(newsGroupID) + " could not list articles.";
       }
     } else {
-      throw ProtocolViolationException{};
+      throw ProtocolViolationException();
     }
     messageHandler.recvCode();
     return result;
-  } catch (exception& e) {
-    throw ProtocolViolationException{};
+  } catch (exception&) {
+    throw;
   }
 }
 
@@ -165,19 +165,19 @@ string createArticle(MessageHandler messageHandler) {
     Protocol code = messageHandler.recvCode();
     if(code == Protocol::ANS_ACK) {
       messageHandler.recvCode();
-      return "Article: " + title + "was created.";
+      return "Article: " + title + " was created.";
     } else if (code == Protocol::ANS_NAK) {
       if(messageHandler.recvCode() == Protocol::ERR_NG_DOES_NOT_EXIST) {
         messageHandler.recvCode();
-        return "Newsgroup with id: " + to_string(newsGroupID) + "does not exist.";
+        return "Newsgroup with id: " + to_string(newsGroupID) + " does not exist.";
       } else {
         return "Newsgroup with id: " + to_string(newsGroupID) + " could not list articles.";
       }
     } else {
-      throw ProtocolViolationException{};
+      throw ProtocolViolationException();
     }
-  } catch (exception& e) {
-    throw ProtocolViolationException{};
+  } catch (exception&) {
+    throw;
   }
 }
 
@@ -201,15 +201,15 @@ string deleteArticle(MessageHandler messageHandler) {
     } else if (code == Protocol::ANS_NAK) {
       if(messageHandler.recvCode() == Protocol::ERR_NG_DOES_NOT_EXIST) {
         messageHandler.recvCode();
-        return "Newsgroup with id: " + to_string(newsGroupID) + "does not exist.";
+        return "Newsgroup with id: " + to_string(newsGroupID) + " does not exist.";
       } else {
         return "Couldn't delete article and no reason was given.";
       }
     } else {
-      throw ProtocolViolationException{};
+      throw ProtocolViolationException();
     }
-  } catch (exception& e) {
-    throw ProtocolViolationException{};
+  } catch (exception&) {
+    throw;
   }
 }
 
@@ -237,17 +237,22 @@ string getArticle(MessageHandler messageHandler) {
       messageHandler.recvCode();
       return "Title: " + title + "\n" + "Author: " + author + "\n" + "Text: " + text + "\n";
     } else if (code == Protocol::ANS_NAK) {
-      if(messageHandler.recvCode() == Protocol::ERR_NG_DOES_NOT_EXIST) {
+      Protocol code = messageHandler.recvCode();
+      if(code == Protocol::ERR_NG_DOES_NOT_EXIST) {
         messageHandler.recvCode();
-        return "Newsgroup or article does not exist.";
+        return "Newsgroup with id: " + to_string(newsGroupID) + " does not exist.";
+      } else if (code == Protocol::ERR_ART_DOES_NOT_EXIST) {
+        messageHandler.recvCode();
+        return "Article with id: " + to_string(articleID) + " doesn't exist.";
       } else {
+        messageHandler.recvCode();
         return "Couldn't get article and no reason was given.";
       }
     } else {
-      throw ProtocolViolationException{};
+      throw ProtocolViolationException();
     }
-  } catch (exception& e) {
-    throw ProtocolViolationException{};
+  } catch (exception&) {
+    throw;
   }
 }
 
@@ -308,21 +313,34 @@ int app(shared_ptr<Connection> conn)
   cout << help() << endl;
   cout << "Enter command(#): ";
   int nbr;
-  while (cin >> nbr) {
-    try {
-      string reply = executeCommand(nbr, messageHandler);
-      cout << reply << endl;
-      if(reply == "Exit") {
-        cout << "exiting...." << endl;
-        return 0;
+  while (true) {
+    cin >> nbr;
+    if (!cin.good()) {
+      cin.clear();
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      cout << "Not a valid command number please try again." << endl;
+      cout << help() << endl;
+    } else {
+      try {
+          string reply = executeCommand(nbr, messageHandler);
+          if(reply == "Exit") {
+            cout << "exiting...." << endl;
+            return 0;
+          }
+          cout << reply << endl;
+
+      } catch (ConnectionClosedException&) {
+        cout << " no reply from server. Exiting." << endl;
+        return 1;
+      } catch (ProtocolViolationException&) {
+        cout << "An error occured in the communication with the server please try again." << endl;
+      } catch (exception&) {
+        cout << "Unkown error occured please try again." << endl;
       }
-      cout << "Enter command(#), type \"0\" for command list: ";
-    } catch (ConnectionClosedException&) {
-      cout << " no reply from server. Exiting." << endl;
-      return 1;
     }
+    cout << "Enter command(#), type \"0\" for command list: ";
   }
-  cout << "\nexiting.\n";
+  cout << "\nexiting.\n" << endl;
   return 0;
 }
 

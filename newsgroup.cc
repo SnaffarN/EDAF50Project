@@ -28,7 +28,7 @@ bool NewsGroup::createArticle(const int& articleID, const string& title, const s
   if(!contains(articleID)) {
     articles.insert(std::make_pair(articleID, Article(articleID, title, author, text)));
     cout << "Creating article: " << title << ". The number of articles is now: " << articles.size() << endl;
-    cout << "I am newsgroup: " << getTitle() << " with id: " << getID() << endl;
+    cout << "In newsgroup: " << getTitle() << " with id: " << getID() << endl;
     return true;
   }
   return false;

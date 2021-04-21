@@ -1,5 +1,6 @@
 #include "connection.h"
 #include "connectionclosedexception.h"
+#include "protocolviolationexception.h"
 #include "server.h"
 #include "messagehandler.h"
 #include "database.h"
@@ -26,9 +27,9 @@ void listNewsGroup(MessageHandler messageHandler, Database& database) {
         messageHandler.sendStringParameter(n.getTitle());
       }
       messageHandler.sendCode(Protocol::ANS_END);
-    } else throw ProtocolViolationException{};
-  } catch (exception& e) {
-    throw ProtocolViolationException{};
+    } else throw ProtocolViolationException();
+  } catch (exception&) {
+    throw;
   }
 }
 
@@ -44,9 +45,9 @@ void createNewsGroup(MessageHandler messageHandler, Database& database) {
         messageHandler.sendCode(Protocol::ERR_NG_ALREADY_EXISTS);
       }
       messageHandler.sendCode(Protocol::ANS_END);
-    } else throw ProtocolViolationException{};
-  } catch (exception& e) {
-    throw ProtocolViolationException{};
+    } else throw ProtocolViolationException();
+  } catch (exception&) {
+    throw;
   }
 }
 
@@ -62,9 +63,9 @@ void deleteNewsGroup(MessageHandler messageHandler, Database& database) {
         messageHandler.sendCode(Protocol::ERR_NG_DOES_NOT_EXIST);
       }
       messageHandler.sendCode(Protocol::ANS_END);
-    } else throw ProtocolViolationException{};
-  } catch (exception& e) {
-    throw ProtocolViolationException{};
+    } else throw ProtocolViolationException();
+  } catch (exception&) {
+    throw;
   }
 }
 
@@ -86,9 +87,9 @@ void listArticles(MessageHandler messageHandler, Database& database) {
         messageHandler.sendCode(Protocol::ERR_NG_DOES_NOT_EXIST);
       }
       messageHandler.sendCode(Protocol::ANS_END);
-    } else throw ProtocolViolationException{};
-  } catch (exception& e) {
-    throw ProtocolViolationException{};
+    } else throw ProtocolViolationException();
+  } catch (exception&) {
+    throw;
   }
 }
 
@@ -107,10 +108,9 @@ void createArticle(MessageHandler messageHandler, Database& database) {
         messageHandler.sendCode(Protocol::ERR_NG_DOES_NOT_EXIST);
       }
       messageHandler.sendCode(Protocol::ANS_END);
-    } else throw ProtocolViolationException{};
-  } catch (exception& e) {
-    cout << "Hej här är jag " << endl;
-    throw ProtocolViolationException{};
+    } else throw ProtocolViolationException();
+  } catch (exception&) {
+    throw;
   }
 }
 
@@ -132,9 +132,9 @@ void deleteArticle(MessageHandler messageHandler, Database& database) {
         messageHandler.sendCode(Protocol::ERR_NG_DOES_NOT_EXIST);
       }
       messageHandler.sendCode(Protocol::ANS_END);
-    } else throw ProtocolViolationException{};
-  } catch (exception& e) {
-    throw ProtocolViolationException{};
+    } else throw ProtocolViolationException();
+  } catch (exception&) {
+    throw;
   }
 }
 
@@ -160,9 +160,9 @@ void getArticle(MessageHandler messageHandler, Database& database) {
         messageHandler.sendCode(Protocol::ERR_NG_DOES_NOT_EXIST);
       }
       messageHandler.sendCode(Protocol::ANS_END);
-    } else throw ProtocolViolationException{};
-  } catch (exception& e) {
-    throw ProtocolViolationException{};
+    } else throw ProtocolViolationException();
+  } catch (exception&) {
+    throw;
   }
 }
 
@@ -183,7 +183,8 @@ void readMessage(MessageHandler messageHandler, Database& database) {
                                     break;
     case Protocol::COM_GET_ART:     getArticle(messageHandler, database);
                                     break;
-    default: throw ProtocolViolationException{};
+    default:                cout << "Default" << endl;
+                            throw ProtocolViolationException();
   }
 }
 
@@ -223,6 +224,10 @@ int main(int argc, char* argv[])
       } catch (ConnectionClosedException&) {
         server.deregisterConnection(conn);
         cout << "Client closed connection" << endl;
+      } catch (ProtocolViolationException&) {
+        //cout << "Error occured while communicating with a client." << endl;
+      } catch (exception& e) {
+        cout << "An error occured." << e.what() << endl;
       }
     } else {
       conn = make_shared<Connection>();

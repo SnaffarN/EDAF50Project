@@ -32,7 +32,7 @@ NewsGroup& MemoryDatabase::getNewsGroup(int id) {
   try {
     return newsGroups.at(id);
   } catch (exception& e) {
-    throw "NewsGroup doesnt exist";
+    throw "NewsGroup doesn't exist";
   }
 }
 
@@ -42,7 +42,7 @@ NewsGroup& MemoryDatabase::getNewsGroup(string title) {
         return it.second;
       }
   }
-  throw "NewsGroup doesnt exist";
+  throw "NewsGroup doesn't exist";
 }
 
 vector<NewsGroup> MemoryDatabase::getNewsGroups() {
@@ -73,31 +73,45 @@ bool MemoryDatabase::containsNewsGroup(string title) {
 }
 
 bool MemoryDatabase::createArticle(int newsGroupID, string title, string author, string text) {
-  int articleID = getNewsGroup(newsGroupID).getArticleCount();
-  getNewsGroup(newsGroupID).incArticleCount();
-  return getNewsGroup(newsGroupID).createArticle(articleID, title, author, text);
+  try {
+    int articleID = getNewsGroup(newsGroupID).getArticleCount();
+    getNewsGroup(newsGroupID).incArticleCount();
+    return getNewsGroup(newsGroupID).createArticle(articleID, title, author, text);
+  } catch (const char* msg) {
+    return false;
+  }
 }
 
 bool MemoryDatabase::deleteArticle(int newsGroupID, int articleID) {
-  return getNewsGroup(newsGroupID).deleteArticle(articleID);
-
+  try {
+    return getNewsGroup(newsGroupID).deleteArticle(articleID);
+  } catch (const char* msg) {
+    return false;
+  }
 }
 
 Article MemoryDatabase::getArticle(int newsGroupID, int articleID) {
-  return getNewsGroup(newsGroupID).getArticle(articleID);
+  try {
+    return getNewsGroup(newsGroupID).getArticle(articleID);
+  } catch (const char* msg) {
+    throw "No article found.";
+  }
 }
 
 vector<Article> MemoryDatabase::getArticles(int newsGroupID) {
-  return getNewsGroup(newsGroupID).getArticles();
+  try {
+    return getNewsGroup(newsGroupID).getArticles();
+  } catch (const char* msg) {
+    return vector<Article>();
+  }
 }
 
 bool MemoryDatabase::containsArticle(int newsGroupID, int articleID) {
-  return getNewsGroup(newsGroupID).contains(articleID);
-}
-
-int MemoryDatabase::hashTitle(string title) {
-  hash<string> hasher;
-  return static_cast<int>(hasher(title));
+  try {
+    return getNewsGroup(newsGroupID).contains(articleID);
+  } catch (const char* msg) {
+    return false;
+  }
 }
 
 int MemoryDatabase::getNewsGroupCount() {

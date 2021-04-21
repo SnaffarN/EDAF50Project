@@ -27,7 +27,6 @@ public:
   bool containsArticle(int newsGroupID, int articleID) override;
 
 private:
-  int hashTitle(string title);
   int getNewsGroupCount();
   int incNewsGroupCount();
   int newsGroupCount = 0;

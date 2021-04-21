@@ -7,8 +7,6 @@
 #include <memory>
 #include <string>
 
-struct ProtocolViolationException {};
-
 using std::string;
 
 class MessageHandler {

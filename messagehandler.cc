@@ -1,6 +1,7 @@
 #include "messagehandler.h"
 #include "protocol.h"
 #include "connectionclosedexception.h"
+#include "protocolviolationexception.h"
 #include "connection.h"
 
 #include <string>
@@ -43,11 +44,12 @@ Protocol MessageHandler::recvCode() {
   Protocol code;
   try {
     code = static_cast<Protocol>(recvByte());
-  } catch(exception& e) {
-    throw "Invalid protocol";
+  } catch (ConnectionClosedException&) {
+    throw;
+  } catch (exception&) {
+    throw ProtocolViolationException();
   }
   return code;
-
 }
 
 int MessageHandler::recvInt() {
@@ -62,8 +64,7 @@ int MessageHandler::recvInt() {
 int MessageHandler::recvIntParameter() {
   Protocol code = recvCode();
   if(code != Protocol::PAR_NUM) {
-    throw ProtocolViolationException{};
-    //static_cast<int>(code);
+    throw ProtocolViolationException();
   }
   return recvInt();
 }
@@ -71,20 +72,21 @@ int MessageHandler::recvIntParameter() {
 string MessageHandler::recvStringParameter() {
   Protocol code = recvCode();
   if(code != Protocol::PAR_STRING) {
-    cout << "Expected code PAR_STRING got code: " + static_cast<int>(code) << endl; //add ProtocolViolationException later.
-    throw ProtocolViolationException{};
+    throw ProtocolViolationException();
 
   }
   int n = recvInt();
   if (n < 0) {
-    cout << "String length must be greater or equal to 0" << endl;
-    cout << "Length of string: " << n << endl;
-    throw ProtocolViolationException{};
+    throw ProtocolViolationException();
   }
   string result;
   for(int i = 0; i < n; i++) {
-    char c = conn->read();
-    result.push_back(c);
+    try {
+      char c = conn->read();
+      result.push_back(c);
+    } catch(ConnectionClosedException&)  {
+      throw;
+    }
   }
   return result;
 }
@@ -92,11 +94,15 @@ string MessageHandler::recvStringParameter() {
 void MessageHandler::sendByte(int code) {
   try {
     conn->write(code);
-  } catch(ConnectionClosedException& e)  {
-    throw e;
+  } catch(ConnectionClosedException&)  {
+    throw;
   }
 }
 
 int MessageHandler::recvByte() {
-  return conn->read();
+  try {
+    return conn->read();
+  } catch(ConnectionClosedException&)  {
+    throw;
+  }
 }
