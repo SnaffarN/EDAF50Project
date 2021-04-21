@@ -5,7 +5,6 @@
 #include "messagehandler.h"
 #include "database.h"
 #include "memorydatabase.h"
-#include "diskDatabase.h"
 
 #include <cstdlib>
 #include <iostream>
@@ -183,8 +182,7 @@ void readMessage(MessageHandler messageHandler, Database& database) {
                                     break;
     case Protocol::COM_GET_ART:     getArticle(messageHandler, database);
                                     break;
-    default:                cout << "Default" << endl;
-                            throw ProtocolViolationException();
+    default:  throw ProtocolViolationException();
   }
 }
 

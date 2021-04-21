@@ -80,8 +80,15 @@ string deleteNewsGroup(MessageHandler messageHandler) {
     string result;
     messageHandler.sendCode(Protocol::COM_DELETE_NG);
     int id;
-    cout << "Enter id of Newsgroup you wish to delete: ";
+    cout << "Enter the id of the Newsgroup you wish to delete: ";
     cin >> id;
+    while (!cin.good()) {
+      cin.clear();
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      cout << "Not a valid number please try again." << endl;
+      cout << "Enter id of Newsgroup you wish to delete: ";
+      cin >> id;
+    }
     messageHandler.sendIntParameter(id);
     messageHandler.sendCode(Protocol::COM_END);
     messageHandler.recvCode();
@@ -109,6 +116,13 @@ string listArticles(MessageHandler messageHandler) {
     int newsGroupID;
     cout << "Enter id of the newsgroup which articles you wish to list: ";
     cin >> newsGroupID;
+    while (!cin.good()) {
+      cin.clear();
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      cout << "Not a valid number please try again." << endl;
+      cout << "Enter id of the newsgroup which articles you wish to list: ";
+      cin >> newsGroupID;
+    }
     string result;
     messageHandler.sendCode(Protocol::COM_LIST_ART);
     messageHandler.sendIntParameter(newsGroupID);
@@ -145,6 +159,13 @@ string createArticle(MessageHandler messageHandler) {
     char c[2000];
     cout << "Enter id of the newsgroup you want to create article under: ";
     cin >> newsGroupID;
+    while (!cin.good()) {
+      cin.clear();
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      cout << "Not a valid number please try again." << endl;
+      cout << "Enter id of the newsgroup you want to create article under: ";
+      cin >> newsGroupID;
+    }
     cout << "Enter title: ";
     cin.ignore();
     cin.getline(c, 2000);
@@ -187,8 +208,22 @@ string deleteArticle(MessageHandler messageHandler) {
     int articleID;
     cout << "Enter id of the newsgroup you want to delete article under: ";
     cin >> newsGroupID;
+    while (!cin.good()) {
+      cin.clear();
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      cout << "Not a valid number please try again." << endl;
+      cout << "Enter id of the newsgroup you want to delete article under: ";
+      cin >> newsGroupID;
+    }
     cout << "Enter id of the article you want to delete: ";
     cin >> articleID;
+    while (!cin.good()) {
+      cin.clear();
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      cout << "Not a valid number please try again." << endl;
+      cout << "Enter id of the article you want to delete: ";
+      cin >> articleID;
+    }
     messageHandler.sendCode(Protocol::COM_DELETE_ART);
     messageHandler.sendIntParameter(newsGroupID);
     messageHandler.sendIntParameter(articleID);
@@ -219,8 +254,22 @@ string getArticle(MessageHandler messageHandler) {
     int articleID;
     cout << "Enter id of the newsgroup you want to view an article under: ";
     cin >> newsGroupID;
+    while (!cin.good()) {
+      cin.clear();
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      cout << "Not a valid number please try again." << endl;
+      cout << "Enter id of the newsgroup you want to view an article under: ";
+      cin >> newsGroupID;
+    }
     cout << "Enter id of the article you want to view: ";
     cin >> articleID;
+    while (!cin.good()) {
+      cin.clear();
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      cout << "Not a valid number please try again." << endl;
+      cout << "Enter id of the article you want to view: ";
+      cin >> articleID;
+    }
     messageHandler.sendCode(Protocol::COM_GET_ART);
     messageHandler.sendIntParameter(newsGroupID);
     messageHandler.sendIntParameter(articleID);
