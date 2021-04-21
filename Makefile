@@ -32,9 +32,9 @@ libclientserver.a: connection.o server.o
 	ar rv libclientserver.a  connection.o server.o
 	ranlib libclientserver.a
 
-ourserver: ourserver.o messagehandler.o connection.o server.o newsgroup.o	article.o memorydatabase.o
+ourserver: ourserver.o messagehandler.o connection.o server.o newsgroup.o	article.o memorydatabase.o diskDatabase.o
 
-database: memorydatabase.o newsgroup.o	article.o
+database: memorydatabase.o diskDatabase.o newsgroup.o	article.o
 
 client: client.o connection.o messagehandler.o
 # Phony targets

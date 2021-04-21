@@ -4,6 +4,7 @@
 #include "messagehandler.h"
 #include "database.h"
 #include "memorydatabase.h"
+#include "diskDatabase.h"
 
 #include <cstdlib>
 #include <iostream>
